@@ -288,6 +288,18 @@ const ChevronRight = () => (
     </svg>
 );
 
+const SunIcon = () => (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z" />
+    </svg>
+);
+
+const MoonIcon = () => (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+);
+
 function BibleMemoryApp() {
     const [currentVerse, setCurrentVerse] = useState(RAW_DATA[0]);
     const [mode, setMode] = useState('learning');
@@ -295,6 +307,20 @@ function BibleMemoryApp() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [expandedCategories, setExpandedCategories] = useState({});
     const [revealIndex, setRevealIndex] = useState(0);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        const saved = localStorage.getItem('theme');
+        return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    });
+
+    useEffect(() => {
+        if (isDarkMode) {
+            document.body.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [isDarkMode]);
 
     const categories = useMemo(() => {
         return [...new Set(RAW_DATA.map(item => item.cat))];
@@ -318,6 +344,7 @@ function BibleMemoryApp() {
     };
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const toggleTheme = () => setIsDarkMode(!isDarkMode);
     const nextStage = () => setStage(s => Math.min(s + 1, 4));
     const prevStage = () => setStage(s => Math.max(s - 1, 1));
 
@@ -328,7 +355,7 @@ function BibleMemoryApp() {
         switch (stage) {
             case 1:
                 return (
-                    <div className="text-lg md:text-2xl leading-relaxed text-gray-800 font-medium whitespace-pre-wrap">
+                    <div className="text-lg md:text-2xl leading-relaxed text-gray-800 dark:text-gray-200 font-medium whitespace-pre-wrap">
                         {text}
                     </div>
                 );
@@ -336,7 +363,7 @@ function BibleMemoryApp() {
                 return (
                     <div className="flex flex-wrap gap-2 justify-center leading-loose">
                         {chunks.map((chunk, i) => (
-                            <span key={i} className="bg-teal-50 text-teal-900 px-2 py-1 rounded-lg text-base md:text-xl font-medium border border-teal-100">
+                            <span key={i} className="bg-teal-50 dark:bg-teal-900/30 text-teal-900 dark:text-teal-100 px-2 py-1 rounded-lg text-base md:text-xl font-medium border border-teal-100 dark:border-teal-800">
                                 {chunk}
                             </span>
                         ))}
@@ -353,7 +380,7 @@ function BibleMemoryApp() {
                                         className={`px-2 py-1 rounded-lg text-base md:text-xl transition-all duration-300 border ${
                                             i <= revealIndex 
                                                 ? 'bg-teal-600 text-white border-teal-600 shadow-sm' 
-                                                : 'bg-gray-100 text-transparent border-dashed border-gray-300'
+                                                : 'bg-gray-100 dark:bg-gray-800 text-transparent border-dashed border-gray-300 dark:border-gray-700'
                                         }`}
                                     >
                                         {chunk}
@@ -361,7 +388,7 @@ function BibleMemoryApp() {
                                 ))}
                             </div>
                         </div>
-                        <div className="flex justify-center flex-wrap gap-2 pt-3 border-t border-gray-100 shrink-0 bg-white">
+                        <div className="flex justify-center flex-wrap gap-2 pt-3 border-t border-gray-100 dark:border-gray-800 shrink-0 bg-white dark:bg-slate-900">
                             <button 
                                 onClick={() => setRevealIndex(prev => Math.min(prev + 3, chunks.length - 1))}
                                 disabled={revealIndex >= chunks.length - 1}
@@ -371,7 +398,7 @@ function BibleMemoryApp() {
                             </button>
                             <button 
                                 onClick={() => setRevealIndex(0)}
-                                className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2.5 rounded-full text-sm font-medium"
+                                className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2.5 rounded-full text-sm font-medium"
                             >
                                 처음부터
                             </button>
@@ -381,10 +408,10 @@ function BibleMemoryApp() {
             case 4:
                 return (
                     <div className="text-center">
-                        <div className="text-lg md:text-2xl leading-relaxed text-gray-800 font-bold p-4 md:p-6 bg-yellow-50 rounded-xl border border-yellow-100 shadow-sm mb-4">
+                        <div className="text-lg md:text-2xl leading-relaxed text-gray-800 dark:text-gray-100 font-bold p-4 md:p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-100 dark:border-yellow-900/30 shadow-sm mb-4">
                             {text}
                         </div>
-                        <p className="text-gray-500 text-sm">이제 눈을 감고 암송해 보세요.</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm">이제 눈을 감고 암송해 보세요.</p>
                     </div>
                 );
             default: return null;
@@ -400,7 +427,7 @@ function BibleMemoryApp() {
         if (stage === 4) {
             const allMasked = text.split('').map(c => c === ' ' ? ' ' : '*').join('');
             return (
-                <div className="text-lg md:text-2xl leading-relaxed text-center font-medium tracking-wide break-all">
+                <div className="text-lg md:text-2xl leading-relaxed text-center font-medium tracking-wide break-all text-gray-800 dark:text-gray-200">
                     {allMasked}
                 </div>
             );
@@ -409,7 +436,7 @@ function BibleMemoryApp() {
         const processedText = processTextForTesting(text, type);
 
         return (
-            <div className="text-lg md:text-2xl leading-relaxed text-center font-medium" style={{wordBreak: 'keep-all'}}>
+            <div className="text-lg md:text-2xl leading-relaxed text-center font-medium text-gray-800 dark:text-gray-200" style={{wordBreak: 'keep-all'}}>
                 {processedText}
             </div>
         );
@@ -419,33 +446,38 @@ function BibleMemoryApp() {
     const currentIndex = RAW_DATA.findIndex(v => v.ref === currentVerse.ref && v.text === currentVerse.text) + 1;
 
     return (
-        <div className="flex h-screen bg-gray-50 text-gray-800 overflow-hidden">
+        <div className="flex h-screen bg-gray-50 dark:bg-slate-950 text-gray-800 dark:text-gray-200 overflow-hidden">
             
             {/* Sidebar */}
             <div 
-                className={`fixed inset-y-0 left-0 w-72 md:w-80 bg-white shadow-xl transform transition-transform duration-300 z-50 flex flex-col border-r border-gray-200
+                className={`fixed inset-y-0 left-0 w-72 md:w-80 bg-white dark:bg-slate-900 shadow-xl transform transition-transform duration-300 z-50 flex flex-col border-r border-gray-200 dark:border-gray-800
                     ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}
             >
-                <div className="p-3 md:p-4 bg-teal-800 text-white font-bold text-base md:text-lg flex justify-between items-center shadow-sm shrink-0">
+                <div className="p-3 md:p-4 bg-teal-800 dark:bg-teal-950 text-white font-bold text-base md:text-lg flex justify-between items-center shadow-sm shrink-0">
                     <span>153 성경암송</span>
-                    <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 hover:bg-teal-700 rounded">
-                        <XIcon />
-                    </button>
+                    <div className="flex items-center gap-1">
+                        <button onClick={toggleTheme} className="p-2 hover:bg-teal-700 dark:hover:bg-teal-900 rounded-full transition-colors">
+                            {isDarkMode ? <SunIcon /> : <MoonIcon />}
+                        </button>
+                        <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 hover:bg-teal-700 dark:hover:bg-teal-900 rounded">
+                            <XIcon />
+                        </button>
+                    </div>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                     {categories.map((cat) => (
-                        <div key={cat} className="border-b border-gray-100">
+                        <div key={cat} className="border-b border-gray-100 dark:border-gray-800">
                             <button 
                                 onClick={() => toggleCategory(cat)}
-                                className="w-full px-3 md:px-4 py-2.5 md:py-3 text-left font-semibold text-gray-700 hover:bg-gray-50 flex justify-between items-center sticky top-0 bg-white z-10"
+                                className="w-full px-3 md:px-4 py-2.5 md:py-3 text-left font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex justify-between items-center sticky top-0 bg-white dark:bg-slate-900 z-10"
                             >
                                 <span className="text-xs md:text-sm">{cat}</span>
                                 {expandedCategories[cat] ? <ChevronUp /> : <ChevronDown />}
                             </button>
                             
                             {expandedCategories[cat] && (
-                                <div className="bg-gray-50">
+                                <div className="bg-gray-50 dark:bg-slate-950/50">
                                     {RAW_DATA.map((item, idx) => {
                                         if (item.cat !== cat) return null;
                                         const isActive = currentVerse.ref === item.ref && currentVerse.text === item.text;
@@ -455,8 +487,8 @@ function BibleMemoryApp() {
                                                 onClick={() => handleSelectVerse(item)}
                                                 className={`w-full px-5 md:px-6 py-2.5 md:py-3 text-left text-xs md:text-sm transition-colors border-l-4 ${
                                                     isActive 
-                                                        ? 'bg-teal-50 text-teal-800 border-teal-600 font-bold' 
-                                                        : 'text-gray-600 hover:bg-gray-100 border-transparent hover:text-gray-900'
+                                                        ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-800 dark:text-teal-400 border-teal-600 font-bold' 
+                                                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border-transparent hover:text-gray-900 dark:hover:text-gray-200'
                                                 }`}
                                             >
                                                 {item.ref}
@@ -481,26 +513,29 @@ function BibleMemoryApp() {
             {/* Main Content */}
             <div className="flex-1 flex flex-col h-full overflow-hidden w-full">
                 {/* Mobile Header */}
-                <header className="md:hidden bg-white border-b p-3 flex items-center gap-2 shrink-0">
-                    <button onClick={toggleSidebar} className="text-teal-800 shrink-0">
+                <header className="md:hidden bg-white dark:bg-slate-900 border-b dark:border-gray-800 p-3 flex items-center gap-2 shrink-0">
+                    <button onClick={toggleSidebar} className="text-teal-800 dark:text-teal-400 shrink-0">
                         <MenuIcon />
                     </button>
-                    <span className="text-xs text-teal-700 font-semibold shrink-0">회복하는교회</span>
-                    <span className="text-gray-300">|</span>
-                    <h1 className="font-bold text-base text-teal-900 truncate flex-1">
+                    <span className="text-xs text-teal-700 dark:text-teal-500 font-semibold shrink-0">회복하는교회</span>
+                    <span className="text-gray-300 dark:text-gray-700">|</span>
+                    <h1 className="font-bold text-base text-teal-900 dark:text-teal-100 truncate flex-1">
                         {currentVerse.ref}
                     </h1>
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full shrink-0">{currentIndex}/153</span>
+                    <button onClick={toggleTheme} className="p-1.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full shrink-0">
+                        {isDarkMode ? <SunIcon /> : <MoonIcon />}
+                    </button>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full shrink-0">{currentIndex}/153</span>
                 </header>
 
                 <div className="flex-1 overflow-y-auto p-3 md:p-6 flex flex-col items-center">
                     
                     {/* Mode Tabs */}
-                    <div className="bg-gray-200 p-1 rounded-full flex w-full max-w-md mb-4 md:mb-6 shadow-inner shrink-0">
+                    <div className="bg-gray-200 dark:bg-gray-800 p-1 rounded-full flex w-full max-w-md mb-4 md:mb-6 shadow-inner shrink-0">
                         <button
                             onClick={() => { setMode('learning'); setStage(1); setRevealIndex(0); }}
                             className={`flex-1 py-2 rounded-full font-bold text-xs md:text-sm transition-all duration-200 ${
-                                mode === 'learning' ? 'bg-white text-teal-800 shadow-sm' : 'text-gray-500'
+                                mode === 'learning' ? 'bg-white dark:bg-slate-700 text-teal-800 dark:text-teal-300 shadow-sm' : 'text-gray-500 dark:text-gray-400'
                             }`}
                         >
                             1. 학습 과정
@@ -508,7 +543,7 @@ function BibleMemoryApp() {
                         <button
                             onClick={() => { setMode('testing'); setStage(1); }}
                             className={`flex-1 py-2 rounded-full font-bold text-xs md:text-sm transition-all duration-200 ${
-                                mode === 'testing' ? 'bg-white text-indigo-800 shadow-sm' : 'text-gray-500'
+                                mode === 'testing' ? 'bg-white dark:bg-slate-700 text-indigo-800 dark:text-indigo-300 shadow-sm' : 'text-gray-500 dark:text-gray-400'
                             }`}
                         >
                             2. 암송 점검
@@ -516,28 +551,28 @@ function BibleMemoryApp() {
                     </div>
 
                     {/* Main Card */}
-                    <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col overflow-hidden flex-1 min-h-0">
+                    <div className="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden flex-1 min-h-0">
                         {/* Card Header */}
-                        <div className="bg-teal-50 p-3 md:p-5 border-b border-gray-100 text-center shrink-0">
-                            <div className="hidden md:block text-xs text-gray-400 mb-1">{currentIndex}/153</div>
-                            <h2 className="text-lg md:text-2xl font-bold text-teal-800 mb-0.5">{currentVerse.ref}</h2>
-                            <p className="text-gray-500 text-xs">{currentVerse.cat}</p>
+                        <div className="bg-teal-50 dark:bg-teal-900/10 p-3 md:p-5 border-b border-gray-100 dark:border-gray-800 text-center shrink-0">
+                            <div className="hidden md:block text-xs text-gray-400 dark:text-gray-500 mb-1">{currentIndex}/153</div>
+                            <h2 className="text-lg md:text-2xl font-bold text-teal-800 dark:text-teal-400 mb-0.5">{currentVerse.ref}</h2>
+                            <p className="text-gray-500 dark:text-gray-400 text-xs">{currentVerse.cat}</p>
                         </div>
 
                         {/* Card Body - 스크롤 가능 영역 */}
-                        <div className="flex-1 p-4 md:p-8 flex items-center justify-center bg-white overflow-y-auto min-h-0">
+                        <div className="flex-1 p-4 md:p-8 flex items-center justify-center bg-white dark:bg-slate-900 overflow-y-auto min-h-0">
                             {mode === 'learning' ? renderLearningContent() : renderTestingContent()}
                         </div>
 
                         {/* Card Footer - 항상 하단에 고정 */}
-                        <div className="p-3 md:p-4 bg-gray-50 border-t border-gray-100 flex flex-col gap-2 shrink-0">
-                            <div className="flex justify-between items-center text-xs font-semibold text-gray-400 uppercase tracking-wider px-2">
+                        <div className="p-3 md:p-4 bg-gray-50 dark:bg-slate-950/50 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2 shrink-0">
+                            <div className="flex justify-between items-center text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider px-2">
                                 <span>1단계</span>
                                 <span>{mode === 'learning' ? '학습' : '점검'}</span>
                                 <span>4단계</span>
                             </div>
                             
-                            <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden w-full">
+                            <div className="h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden w-full">
                                 <div 
                                     className={`h-full transition-all duration-500 ease-out ${mode === 'learning' ? 'bg-teal-500' : 'bg-indigo-500'}`}
                                     style={{ width: `${(stage / 4) * 100}%` }}
@@ -548,7 +583,7 @@ function BibleMemoryApp() {
                                 <button
                                     onClick={prevStage}
                                     disabled={stage === 1}
-                                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl font-bold bg-white border border-gray-200 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm text-sm"
+                                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl font-bold bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm text-sm"
                                 >
                                     <ChevronLeft /> 이전
                                 </button>
@@ -556,13 +591,13 @@ function BibleMemoryApp() {
                                     onClick={nextStage}
                                     disabled={stage === 4}
                                     className={`flex-1 flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl font-bold text-white shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm ${
-                                        mode === 'learning' ? 'bg-teal-600' : 'bg-indigo-600'
+                                        mode === 'learning' ? 'bg-teal-600 dark:bg-teal-700' : 'bg-indigo-600 dark:bg-indigo-700'
                                     }`}
                                 >
                                     다음 <ChevronRight />
                                 </button>
                             </div>
-                            <div className="text-center text-xs text-gray-400 mt-1">
+                            <div className="text-center text-xs text-gray-400 dark:text-gray-500 mt-1">
                                 {mode === 'learning' && stage === 1 && "전체 말씀을 소리내어 읽어보세요"}
                                 {mode === 'learning' && stage === 2 && "의미 단위로 끊어서 기억하세요"}
                                 {mode === 'learning' && stage === 3 && "버튼을 눌러 가려진 부분을 확인하세요"}
