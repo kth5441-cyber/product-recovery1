@@ -390,11 +390,11 @@ function BibleMemoryApp() {
                         </div>
                         <div className="flex justify-center flex-wrap gap-2 pt-3 border-t border-gray-100 dark:border-gray-800 shrink-0 bg-white dark:bg-slate-900">
                             <button 
-                                onClick={() => setRevealIndex(prev => Math.min(prev + 3, chunks.length - 1))}
+                                onClick={() => setRevealIndex(prev => Math.min(prev + 1, chunks.length - 1))}
                                 disabled={revealIndex >= chunks.length - 1}
                                 className="bg-teal-500 hover:bg-teal-600 text-white px-5 py-2.5 rounded-full font-semibold disabled:opacity-50 transition-colors text-sm"
                             >
-                                다음 문구 열기
+                                다음 문장 열기
                             </button>
                             <button 
                                 onClick={() => setRevealIndex(0)}
@@ -613,6 +613,11 @@ function BibleMemoryApp() {
                 </div>
             </div>
         </div>
+    );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<BibleMemoryApp />);       </div>
     );
 }
 
