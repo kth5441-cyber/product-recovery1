@@ -513,19 +513,24 @@ function BibleMemoryApp() {
             {/* Main Content */}
             <div className="flex-1 flex flex-col h-full overflow-hidden w-full">
                 {/* Mobile Header */}
-                <header className="md:hidden bg-white dark:bg-slate-900 border-b dark:border-gray-800 p-3 flex items-center gap-2 shrink-0">
-                    <button onClick={toggleSidebar} className="text-teal-800 dark:text-teal-400 shrink-0">
-                        <MenuIcon />
-                    </button>
-                    <span className="text-xs text-teal-700 dark:text-teal-500 font-semibold shrink-0">153 성경암송</span>
-                    <span className="text-gray-300 dark:text-gray-700">|</span>
-                    <h1 className="font-bold text-base text-teal-900 dark:text-teal-100 truncate flex-1">
-                        {currentVerse.ref}
-                    </h1>
-                    <button onClick={toggleTheme} className="p-1.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full shrink-0">
-                        {isDarkMode ? <SunIcon /> : <MoonIcon />}
-                    </button>
-                    <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full shrink-0">{currentIndex}/153</span>
+                <header className="md:hidden bg-white dark:bg-slate-900 border-b dark:border-gray-800 p-3 flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-3">
+                        <button onClick={toggleSidebar} className="text-teal-800 dark:text-teal-400 p-1">
+                            <MenuIcon />
+                        </button>
+                        <button onClick={toggleTheme} className="text-teal-800 dark:text-teal-400 p-1 bg-teal-50 dark:bg-teal-900/30 rounded-lg">
+                            {isDarkMode ? <SunIcon /> : <MoonIcon />}
+                        </button>
+                    </div>
+                    <div className="flex-1 flex flex-col items-center overflow-hidden px-2">
+                        <h1 className="font-bold text-sm text-teal-900 dark:text-teal-100 truncate w-full text-center">
+                            {currentVerse.ref}
+                        </h1>
+                        <span className="text-[10px] text-teal-700 dark:text-teal-500 font-medium">153 성경암송</span>
+                    </div>
+                    <div className="shrink-0">
+                        <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">{currentIndex}/153</span>
+                    </div>
                 </header>
 
                 <div className="flex-1 overflow-y-auto p-3 md:p-6 flex flex-col items-center">
