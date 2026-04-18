@@ -517,7 +517,7 @@ function BibleMemoryApp() {
                     <button onClick={toggleSidebar} className="text-teal-800 dark:text-teal-400 shrink-0">
                         <MenuIcon />
                     </button>
-                    <span className="text-xs text-teal-700 dark:text-teal-500 font-semibold shrink-0">회복하는교회</span>
+                    <span className="text-xs text-teal-700 dark:text-teal-500 font-semibold shrink-0">153 성경암송</span>
                     <span className="text-gray-300 dark:text-gray-700">|</span>
                     <h1 className="font-bold text-base text-teal-900 dark:text-teal-100 truncate flex-1">
                         {currentVerse.ref}
